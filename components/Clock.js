@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 const Clock = () => {
   const [currentTime, setCurrentTime] = useState("");
@@ -66,12 +66,34 @@ const Clock = () => {
   };
 
   return (
-    <View>
-      <Text>{currentDay}</Text>
-      <Text>{currentDate}</Text>
-      <Text>{currentTime}</Text>
-    </View>
+    <>
+      <Text style={style.day}>{currentDay}</Text>
+      <View style={style.clockContainer}>
+        <Text style={style.time}>{currentTime}</Text>
+        <Text style={style.date}>{currentDate}</Text>
+      </View>
+    </>
   );
 };
+
+const style = StyleSheet.create({
+  day: {
+    textAlign: "center",
+    fontSize: 50,
+    fontWeight: "bold",
+    paddingTop: 5,
+  },
+  clockContainer: {
+    paddingTop: 5,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+  },
+  date: {
+    fontSize: 25,
+  },
+  time: {
+    fontSize: 25,
+  },
+});
 
 export default Clock;
