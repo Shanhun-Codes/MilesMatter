@@ -8,7 +8,7 @@ export default function App() {
     <View style={styles.body}>
       <Header />
       <Clock />
-      {/* <DailyMileEntry /> */}
+      <DailyMileEntry />
 
     </View>
   );
