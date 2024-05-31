@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 const Trip = ({ item }) => {
   return (
     <View style={[style.card]}>
+              {/* DATE */}
       <Text style={[style.date, style.center]}>
         {item.startTime.toLocaleString().slice(0, 9)}
       </Text>
@@ -16,7 +17,7 @@ const Trip = ({ item }) => {
 
         <View style={[style.cardRightInfo]}>
           <Text>End:</Text>
-          <Text>{item.endTime.toLocaleString().slice(11)}</Text>
+          <Text>{item.endTime ? item.endTime.toLocaleString().slice(11) : ''}</Text>
           <Text>{item.endLocation}</Text>
           <Text>{item.endMiles}</Text>
         </View>
