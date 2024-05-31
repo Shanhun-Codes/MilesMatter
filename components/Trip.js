@@ -1,33 +1,32 @@
 import { StyleSheet, Text, View } from "react-native";
 
-const Trip = ({ trip }) => {
+const Trip = ({ item }) => {
   return (
     <View style={[style.card]}>
       <Text style={[style.date, style.center]}>
-        {trip.startTime.toLocaleString().slice(0, 9)}
+        {item.startTime.toLocaleString().slice(0, 9)}
       </Text>
-<View style={[style.cardInfo]}>
+      <View style={[style.cardInfo]}>
+        <View style={[style.cardLeftInfo]}>
+          <Text>Start:</Text>
+          <Text>{item.startTime.toLocaleString().slice(11)}</Text>
+          <Text>{item.startLocation}</Text>
+          <Text>{item.startMiles}</Text>
+        </View>
 
-      <View style={[style.cardLeftInfo]}>
-        <Text>Start:</Text>
-        <Text>{trip.startTime.toLocaleString().slice(11)}</Text>
-        <Text>{trip.startLocation}</Text>
-        <Text>{trip.startMiles}</Text>
+        <View style={[style.cardRightInfo]}>
+          <Text>End:</Text>
+          <Text>{item.endTime.toLocaleString().slice(11)}</Text>
+          <Text>{item.endLocation}</Text>
+          <Text>{item.endMiles}</Text>
+        </View>
+        <View style={[style.location]}></View>
+        <View style={[style.miles]}></View>
       </View>
-
-      <View style={[style.cardRightInfo]}>
-        <Text>End:</Text>
-        <Text>{trip.endTime.toLocaleString().slice(11)}</Text>
-        <Text>{trip.endLocation}</Text>
-        <Text>{trip.endMiles}</Text>
-      </View>
-      <View style={[style.location]}></View>
-      <View style={[style.miles]}></View>
-</View>
-      <View style={style.flex}>
-      <Text style={[style.center]}>Total Miles:</Text>
+      <View style={[style.flex]}>
+        <Text style={[style.center]}>Total Miles:</Text>
         <Text style={style.center}>
-          {trip.endMiles ? trip.endMiles - trip.startMiles : ""}
+          {item.endMiles ? item.endMiles - item.startMiles : ""}
         </Text>
       </View>
     </View>
@@ -44,26 +43,26 @@ const style = StyleSheet.create({
     borderRadius: 0.01,
   },
   flex: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   center: {
     textAlign: "center",
   },
   cardInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-evenly'
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
   cardLeftInfo: {
     borderWidth: 1,
     width: "45%",
-    alignItems: 'center'
+    alignItems: "center",
   },
   cardRightInfo: {
     borderWidth: 1,
-    width: '45%',
-    alignItems: 'center',
-  }
+    width: "45%",
+    alignItems: "center",
+  },
 });
 
 export default Trip;

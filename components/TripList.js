@@ -1,10 +1,11 @@
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import Trip from "./Trip";
+import { useState } from "react";
 
 const TripList = () => {
-  const trips = [
+  const [trip, setTrip] = useState([
     {
-      key: 1,
+      id: 1,
       startMiles: 1234,
       endMiles: 1273,
       startTime: new Date("2023-05-21T11:45:00.000Z"),
@@ -13,7 +14,7 @@ const TripList = () => {
       endLocation: "Sacramento, CA",
     },
     {
-      key: 2,
+      id: 2,
       startMiles: 90123,
       endMiles: 90161,
       startTime: new Date("2023-05-22T07:30:00.000Z"),
@@ -22,7 +23,7 @@ const TripList = () => {
       endLocation: "Salt Lake City, UT",
     },
     {
-      key: 3,
+      id: 3,
       startMiles: 89012,
       endMiles: 89049,
       startTime: new Date("2023-05-23T20:00:00.000Z"),
@@ -31,7 +32,7 @@ const TripList = () => {
       endLocation: "Charlotte, NC",
     },
     {
-      key: 4,
+      id: 4,
       startMiles: 78901,
       endMiles: 78937,
       startTime: new Date("2023-05-24T16:45:00.000Z"),
@@ -40,7 +41,7 @@ const TripList = () => {
       endLocation: "Houston, TX",
     },
     {
-      key: 5,
+      id: 5,
       startMiles: 67890,
       endMiles: 67925,
       startTime: new Date("2023-05-25T12:30:00.000Z"),
@@ -49,7 +50,7 @@ const TripList = () => {
       endLocation: "Hartford, CT",
     },
     {
-      key: 6,
+      id: 6,
       startMiles: 56789,
       endMiles: 56813,
       startTime: new Date("2023-05-26T09:15:00.000Z"),
@@ -58,7 +59,7 @@ const TripList = () => {
       endLocation: "Portland, OR",
     },
     {
-      key: 7,
+      id: 7,
       startMiles: 45678,
       endMiles: 45701,
       startTime: new Date("2023-05-27T18:00:00.000Z"),
@@ -67,7 +68,7 @@ const TripList = () => {
       endLocation: "Tampa, FL",
     },
     {
-      key: 8,
+      id: 8,
       startMiles: 34567,
       endMiles: 34589,
       startTime: new Date("2023-05-28T14:45:00.000Z"),
@@ -76,7 +77,7 @@ const TripList = () => {
       endLocation: "Indianapolis, IN",
     },
     {
-      key: 9,
+      id: 9,
       startMiles: 23456,
       endMiles: 23478,
       startTime: new Date("2023-05-29T10:30:00.000Z"),
@@ -85,33 +86,33 @@ const TripList = () => {
       endLocation: "San Diego, CA",
     },
     {
-      key: 10,
+      id: 10,
       startMiles: 12345,
-      endMiles: '',
+      endMiles: "",
       startTime: new Date("2023-05-30T08:15:00.000Z"),
       endTime: new Date("2023-05-30T10:30:00.000Z"),
       startLocation: "New York, NY",
       endLocation: "",
     },
-  ];
+  ]);
 
-  const sortedTrips = trips.sort((a, b) => b.key - a.key)
+  const sortedTrips = trip.sort((a, b) => b.id - a.id);
 
   return (
     <View style={style.listContainer}>
-      <ScrollView>
-        {sortedTrips.map((trip) => (
-          <Trip style={style.listItem} key={trip.key} trip={trip} />
-        ))}
-      </ScrollView>
+      <FlatList
+        keyExtractor={(item) => item.id}
+        data={sortedTrips}
+        renderItem={({ item }) => <Trip key={item.id} item={item} />}
+      />
     </View>
   );
 };
 
 const style = StyleSheet.create({
-    listContainer: {
-        padding: 30
-    }
+  listContainer: {
+    padding: 30,
+  },
 });
 
 export default TripList;
