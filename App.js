@@ -1,63 +1,59 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
+import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import DailyMileEntry from "./components/DailyMileEntry";
 import Clock from "./components/Clock";
 import Trip from "./components/Trip";
-import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 
-
 export default function App() {
-const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState();
 
   useEffect(() => {
     const getPermissions = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
+      if (status !== "granted") {
         console.log("Please grant location permissions");
         return;
       }
-      setIsLoading(true)
+      setIsLoading(true);
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      console.log('LOCATION') 
+      console.log("LOCATION");
       console.log(currentLocation);
-      setIsLoading(false)
+      setIsLoading(false);
     };
     getPermissions();
   }, []);
 
-  let currentAddressFormat = ''
+  let currentAddressFormat = "";
 
   const reverseGeocode = async (coords) => {
     const reverseGeoCodedAddress = await Location.reverseGeocodeAsync({
       longitude: coords.longitude,
-      latitude: coords.latitude
+      latitude: coords.latitude,
     });
-  
+
     if (reverseGeoCodedAddress.length > 0) {
       const currentAddress = {
         streetNumber: reverseGeoCodedAddress[0].streetNumber,
         streetName: reverseGeoCodedAddress[0].street, // Access street from the first object
+        city: reverseGeoCodedAddress[0].city,
         state: reverseGeoCodedAddress[0].region,
-        zip: reverseGeoCodedAddress[0].postalCode
+        zip: reverseGeoCodedAddress[0].postalCode,
       };
       currentAddressFormat = `${currentAddress.streetNumber} ${currentAddress.streetName},
-      ${currentAddress.state}, ${currentAddress.zip}`;
-      console.log('Address');
+      ${currentAddress.city}, ${currentAddress.state}`;
+      console.log("Address");
       console.log(currentAddress);
-  
+
       return currentAddressFormat;
     } else {
       console.log("No address found");
       return "";
     }
   };
-  
-
-
-
 
   const [trips, setTrips] = useState([
     {
@@ -151,78 +147,90 @@ const [isLoading, setIsLoading] = useState(false)
       endLocation: "",
     },
   ]);
-  
+
   const sortedTrips = trips.sort((a, b) => b.id - a.id);
   // console.log("SORTED TRIPS");
   // console.log(sortedTrips)
 
-
-
-
   const submitHandler = (text) => {
-    const getAddress = async () => {
-      const addressFormat = await reverseGeocode(location.coords);
-      console.log(addressFormat);
-      const newTrip = {
-        id: trips.length + 1,
-        startMiles: text,
-        startTime: new Date(),
-        startLocation: addressFormat,
+    if(text.length > 0) {
+      const getAddress = async () => {
+        const addressFormat = await reverseGeocode(location.coords);
+        console.log(addressFormat);
+        const newTrip = {
+          id: trips.length + 1,
+          startMiles: text,
+          startTime: new Date(),
+          startLocation: addressFormat,
+        };
+  
+        setTrips((prevTrips) => {
+          const updatedTrips = [newTrip, ...prevTrips];
+          console.log("New Trip:", newTrip);
+          return updatedTrips;
+        });
       };
-  
-      setTrips((prevTrips) => {
-        const updatedTrips = [newTrip, ...prevTrips];
-        console.log("New Trip:", newTrip);
-        return updatedTrips;
-      });
-    };
-  
-    getAddress();
+      getAddress();
+
+    } else {
+      Alert.alert("OOPS!", "Entry must be at least 1 character!", [{text: 'Understood', onPress: () => console.log("Alert Closed")}])
+    }
+
+
   };
-  
 
-
-  return (
-    isLoading ? (
-      <View style={styles.loadingContainer}>
-        <View style={styles.loading}>
-          <Text style={styles.loadingText}>Content is Loading...</Text>
-        </View>
+  return isLoading ? (
+    <View style={styles.loadingContainer}>
+      <View style={styles.loading}>
+        <Text style={styles.loadingText}>Content is Loading...</Text>
       </View>
-    ) : (
-      <View style={styles.body}>
+    </View>
+  ) : (
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View style={styles.container}>
         <Header />
         <Clock />
+        <View style={styles.content}>
+
         <DailyMileEntry submitHandler={submitHandler} />
-        <View style={styles.listContainer}>
-          <FlatList
-            keyExtractor={(item) => item.id.toString()}
-            data={sortedTrips}
-            renderItem={({ item }) => <Trip key={item.id} item={item} />}
-          />
+        <View style={styles.list}>
+
+        <FlatList
+          keyExtractor={(item) => item.id.toString()}
+          data={sortedTrips}
+          renderItem={({ item }) => <Trip key={item.id} item={item} />}
+          
+        />
+        </View>
         </View>
       </View>
-    )
+    </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  body: {
-    flex: 1, 
-    display: 'flex',
+  container: {
+    flex: 1,
     backgroundColor: "#fff",
   },
-  loadingContainer: {
+  content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  },
+  list: {
+    flex: 1,
+  },
+  loadingContainer: {
+    justifyContent: "center",
+    alignItems: "center",
   },
   loading: {
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   loadingText: {
     fontSize: 40,
-    fontWeight: 'bold'
-  }
+    fontWeight: "bold",
+  },
+  listContainer: {
+  },
 });

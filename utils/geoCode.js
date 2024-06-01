@@ -1,8 +1,8 @@
-import * as Location from "expo-location";
-import { useState, useEffect } from "react";
+// import * as Location from "expo-location";
+// import { useState, useEffect } from "react";
 
 
-  const [location, setLocation] = useState(null);
+//   const [location, setLocation] = useState(null);
 
   // useEffect(() => {
   //   let setLocation;
@@ -20,23 +20,23 @@ import { useState, useEffect } from "react";
   //   getPermissions();
   // }, []);
 
-  const reverseGeocode = async (coords) => {
-    const reverseGeoCodedAddress = await Location.reverseGeocodeAsync({
-      longitude: coords.longitude,
-      latitude: coords.latitude
-    });
-    if (reverseGeoCodedAddress.length > 0) {
-      const currentAddress = {
-        streetNumber: reverseGeoCodedAddress[0].streetNumber,
-        streetName: reverseGeoCodedAddress[0].street,
-        state: reverseGeoCodedAddress[0].region,
-        zip: reverseGeoCodedAddress[0].postalCode
-      };
-      const current 
-      console.log('Address');
-      console.log(currentAddress);
-    } else {
-      console.log("No address found");
-    }
-  };
+  // const reverseGeocode = async (coords) => {
+  //   const reverseGeoCodedAddress = await Location.reverseGeocodeAsync({
+  //     longitude: coords.longitude,
+  //     latitude: coords.latitude
+  //   });
+  //   if (reverseGeoCodedAddress.length > 0) {
+  //     const currentAddress = {
+  //       streetNumber: reverseGeoCodedAddress[0].streetNumber,
+  //       streetName: reverseGeoCodedAddress[0].street,
+  //       state: reverseGeoCodedAddress[0].region,
+  //       zip: reverseGeoCodedAddress[0].postalCode
+  //     };
+  //     const current 
+  //     console.log('Address');
+  //     console.log(currentAddress);
+  //   } else {
+  //     console.log("No address found");
+  //   }
+  // };
 
