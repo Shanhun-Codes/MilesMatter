@@ -15,6 +15,7 @@ import Clock from "./components/Clock";
 import Trip from "./components/Trip";
 import * as Location from "expo-location";
 import EndTripMilageEntry from "./components/EndTripMilageEntry";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
@@ -22,22 +23,82 @@ export default function App() {
   const [tripPressed, setTripPressed] = useState(false)
   const [ selectedTripId, setSelectedTripId] = useState(null)
 
-  useEffect(() => {
-    const getPermissions = async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Please grant location permissions");
-        return;
+// Store data in Async Storage
+const storeData = async (key, value) => {
+  try {
+    await AsyncStorage.setItem(key, JSON.stringify(value));
+  } catch (e) {
+    console.error('Error storing data:', e);
+  }
+};
+
+// Retrieve data from Async Storage
+const getData = async (key) => {
+  try {
+    const value = await AsyncStorage.getItem(key);
+    return value !== null ? JSON.parse(value) : null;
+  } catch (e) {
+    console.error('Error retrieving data:', e);
+  }
+};
+
+const storeTrips = async (updatedTrips) => {
+  try {
+    await storeData('trips', updatedTrips);
+  } catch (e) {
+    console.error('Error storing trips:', e);
+  }
+};
+
+// Retrieve trips from Async Storage when the component mounts
+useEffect(() => {
+  const getPermissions = async () => {
+    // ... (existing code)
+    let { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") {
+      console.log("Please grant location permissions");
+      return;
+    }
+    setIsLoading(true);
+    let currentLocation = await Location.getCurrentPositionAsync({});
+    setLocation(currentLocation);
+    console.log("LOCATION");
+    console.log(currentLocation);
+    setIsLoading(false);
+  };
+
+  const loadTrips = async () => {
+    try {
+      const storedTrips = await getData('trips');
+      if (storedTrips !== null) {
+        setTrips(storedTrips);
       }
-      setIsLoading(true);
-      let currentLocation = await Location.getCurrentPositionAsync({});
-      setLocation(currentLocation);
-      console.log("LOCATION");
-      console.log(currentLocation);
-      setIsLoading(false);
-    };
-    getPermissions();
-  }, []);
+    } catch (e) {
+      console.error('Error loading trips:', e);
+    }
+  };
+
+  getPermissions();
+  loadTrips();
+}, []);
+
+
+  // useEffect(() => {
+  //   const getPermissions = async () => {
+  //     let { status } = await Location.requestForegroundPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Please grant location permissions");
+  //       return;
+  //     }
+  //     setIsLoading(true);
+  //     let currentLocation = await Location.getCurrentPositionAsync({});
+  //     setLocation(currentLocation);
+  //     console.log("LOCATION");
+  //     console.log(currentLocation);
+  //     setIsLoading(false);
+  //   };
+  //   getPermissions();
+  // }, []);
 
   let currentAddressFormat = "";
 
@@ -160,10 +221,6 @@ export default function App() {
     },
   ]);
 
-  // const sortedTrips = trips.sort((a, b) => b.id - a.id);
-  // console.log("SORTED TRIPS");
-  // console.log(sortedTrips)
-
   const startSubmitHandler = (text) => {
     if (text.length > 0) {
       const getAddress = async () => {
@@ -171,7 +228,7 @@ export default function App() {
         console.log(addressFormat);
         const newTrip = {
           id: trips.length + 1,
-          startMiles: text,
+          startMiles: text.padStart(6, 0),
           startTime: new Date(),
           startLocation: addressFormat,
         };
@@ -179,6 +236,7 @@ export default function App() {
         setTrips((prevTrips) => {
           const updatedTrips = [newTrip, ...prevTrips];
           console.log("New Trip:", newTrip);
+          storeTrips(updatedTrips); 
           return updatedTrips;
         });
       };
@@ -208,7 +266,7 @@ export default function App() {
   
         const updatedTrip = {
           ...tripToUpdate, 
-          endMiles: text,
+          endMiles: text.padStart(6, 0),
           endTime: new Date(),
           endLocation: addressFormat
         };
@@ -218,6 +276,7 @@ export default function App() {
             trip.id === selectedTripId ? updatedTrip : trip
           );
           console.log("Updated array", updatedTrips);
+          storeTrips(updatedTrips); // Store updated trips
           return updatedTrips;
         });
       };
