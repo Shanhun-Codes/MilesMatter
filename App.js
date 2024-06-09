@@ -1,14 +1,26 @@
-import { FlatList, StyleSheet, Text, View, Alert, TouchableWithoutFeedback, Keyboard } from "react-native";
+import {
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
+  TouchableOpacity,
+} from "react-native";
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
 import DailyMileEntry from "./components/DailyMileEntry";
 import Clock from "./components/Clock";
 import Trip from "./components/Trip";
 import * as Location from "expo-location";
+import EndTripMilageEntry from "./components/EndTripMilageEntry";
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [location, setLocation] = useState();
+  const [tripPressed, setTripPressed] = useState(false)
+  const [ selectedTripId, setSelectedTripId] = useState(null)
 
   useEffect(() => {
     const getPermissions = async () => {
@@ -148,12 +160,12 @@ export default function App() {
     },
   ]);
 
-  const sortedTrips = trips.sort((a, b) => b.id - a.id);
+  // const sortedTrips = trips.sort((a, b) => b.id - a.id);
   // console.log("SORTED TRIPS");
   // console.log(sortedTrips)
 
-  const submitHandler = (text) => {
-    if(text.length > 0) {
+  const startSubmitHandler = (text) => {
+    if (text.length > 0) {
       const getAddress = async () => {
         const addressFormat = await reverseGeocode(location.coords);
         console.log(addressFormat);
@@ -163,7 +175,7 @@ export default function App() {
           startTime: new Date(),
           startLocation: addressFormat,
         };
-  
+
         setTrips((prevTrips) => {
           const updatedTrips = [newTrip, ...prevTrips];
           console.log("New Trip:", newTrip);
@@ -171,13 +183,55 @@ export default function App() {
         });
       };
       getAddress();
-
     } else {
-      Alert.alert("OOPS!", "Entry must be at least 1 character!", [{text: 'Understood', onPress: () => console.log("Alert Closed")}])
+      Alert.alert("OOPS!", "Entry must be at least 1 character!", [
+        { text: "Understood", onPress: () => console.log("Alert Closed") },
+      ]);
     }
-
-
   };
+
+
+  const tripPressHandler = (tripId) => {
+    setTripPressed(true);
+    console.log(`Item with id ${tripId} was pressed`);
+    setSelectedTripId(tripId);
+  };
+  
+  const endSubmitHandler = (text) => {
+    console.log(`the end milage is ${text}`);
+    if (text.length > 0) {
+      const getAddress = async () => {
+        const addressFormat = await reverseGeocode(location.coords);
+        console.log(addressFormat);
+        const tripToUpdate = trips.find(trip => trip.id === selectedTripId);
+        console.log(tripToUpdate);
+  
+        const updatedTrip = {
+          ...tripToUpdate, 
+          endMiles: text,
+          endTime: new Date(),
+          endLocation: addressFormat
+        };
+  
+        setTrips((prevTrips) => {
+          const updatedTrips = prevTrips.map(trip =>
+            trip.id === selectedTripId ? updatedTrip : trip
+          );
+          console.log("Updated array", updatedTrips);
+          return updatedTrips;
+        });
+      };
+      getAddress();
+    } else {
+      Alert.alert("OOPS!", "Entry must be at least 1 character!", [
+        { text: "Understood", onPress: () => console.log("Alert Closed") },
+      ]);
+    }
+    setTripPressed(false)
+  };
+
+
+
 
   return isLoading ? (
     <View style={styles.loadingContainer}>
@@ -186,25 +240,23 @@ export default function App() {
       </View>
     </View>
   ) : (
-    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={styles.container}>
+    <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
+      <View>
         <Header />
         <Clock />
+        { tripPressed ? (<EndTripMilageEntry endSubmitHandler={endSubmitHandler}/> ) : ((<DailyMileEntry startSubmitHandler={startSubmitHandler} />))}
+      </View>
+            </TouchableWithoutFeedback>
         <View style={styles.content}>
-
-        <DailyMileEntry submitHandler={submitHandler} />
-        <View style={styles.list}>
-
-        <FlatList
-          keyExtractor={(item) => item.id.toString()}
-          data={sortedTrips}
-          renderItem={({ item }) => <Trip key={item.id} item={item} />}
-          
-        />
-        </View>
+            <FlatList
+              keyExtractor={(item) => item.id.toString()}
+              data={trips.slice().sort((a, b) => b.id - a.id)}
+              renderItem={({ item }) => 
+              <Trip key={item.id} item={item} tripPressHandler={tripPressHandler}/>}
+            />
         </View>
       </View>
-    </TouchableWithoutFeedback>
   );
 }
 
@@ -215,11 +267,13 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-  },
+},
   list: {
     flex: 1,
+    height: '30%'
   },
   loadingContainer: {
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -230,7 +284,5 @@ const styles = StyleSheet.create({
   loadingText: {
     fontSize: 40,
     fontWeight: "bold",
-  },
-  listContainer: {
   },
 });

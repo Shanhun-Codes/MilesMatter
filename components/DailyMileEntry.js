@@ -7,7 +7,7 @@ import {
   View,
 } from "react-native";
 
-const DailyMileEntry = ({submitHandler}) => {
+const DailyMileEntry = ({startSubmitHandler}) => {
   const [text, setText] = useState('')
 
 
@@ -24,17 +24,13 @@ const DailyMileEntry = ({submitHandler}) => {
         <View style={style.inputContainer}>
           <TextInput style={style.input} 
           keyboardType="numeric"
-          placeholder="Enter Miles"
+          placeholder="Enter Start Miles"
           onChangeText={changeHandler}
           />
-
-
-          {/* <TextInput style={style.input} placeholder="End miles" /> Needs to go onto the edit page of each list item so initial submit enters start miles and location then user will click on the trip at end of shift and enter end miles which will log miles and current location once again */}
-
-
         </View>
-        <TouchableOpacity style={style.buttonContainer}
-        onPress={() => submitHandler(text)}>          
+        <TouchableOpacity
+        style={style.buttonContainer}
+        onPress={() => startSubmitHandler(text)}>          
           <Text style={style.button}
           >Start Trip</Text>
         </TouchableOpacity>
