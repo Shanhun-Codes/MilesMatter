@@ -2,42 +2,48 @@ import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 const Trip = ({ item, tripPressHandler }) => {
+  const formatDate = (date) => {
+    const d = new Date(date);
+    return d.toLocaleDateString();
+  };
 
+  const formatTime = (date) => {
+    const d = new Date(date);
+    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
 
+  const formattedStartDate = formatDate(item.startTime);
+  const formattedStartTime = formatTime(item.startTime);
+  const formattedEndTime = item.endTime ? formatTime(item.endTime) : '';
 
   return (
     <TouchableOpacity onPress={() => tripPressHandler(item.id)}>
-    <View style={style.cardContainer}>
-      <View style={style.card}>
-        <Text style={[style.date, style.center]}>
-          {item.startTime.toLocaleString().slice(0, 9)}
-        </Text>
-        <View style={style.cardInfo}>
-          <View style={[style.cardLeftInfo, style.center]}>
-            <Text>Start:</Text>
-            <Text>{item.startTime.toLocaleString().slice(10)}</Text>
-            <Text>{item.startLocation}</Text>
-            <Text>{item.startMiles}</Text>
+      <View style={style.cardContainer}>
+        <View style={style.card}>
+          <Text style={[style.date, style.center]}>{formattedStartDate}</Text>
+          <View style={style.cardInfo}>
+            <View style={[style.cardLeftInfo, style.center]}>
+              <Text>Start:</Text>
+              <Text>{formattedStartTime}</Text>
+              <Text>{item.startLocation}</Text>
+              <Text>{item.startMiles}</Text>
+            </View>
+            <View style={[style.cardRightInfo]}>
+              <Text>End:</Text>
+              <Text>{formattedEndTime}</Text>
+              <Text>{item.endLocation}</Text>
+              <Text>{item.endMiles}</Text>
+            </View>
           </View>
-          <View style={[style.cardRightInfo]}>
-            <Text>End:</Text>
-            <Text>
-              {item.endTime ? item.endTime.toLocaleString().slice(10) : ""}
+          <View style={style.flex}>
+            <Text style={style.center}>Total Miles:</Text>
+            <Text style={style.center}>
+              {item.endMiles ? item.endMiles - item.startMiles : ''}
             </Text>
-            <Text>{item.endLocation}</Text>
-            <Text>{item.endMiles}</Text>
           </View>
-        </View>
-        <View style={style.flex}>
-          <Text style={style.center}>Total Miles:</Text>
-          <Text style={style.center}>
-            {item.endMiles ? item.endMiles - item.startMiles : ""}
-          </Text>
         </View>
       </View>
-    </View>
     </TouchableOpacity>
-      
   );
 };
 
