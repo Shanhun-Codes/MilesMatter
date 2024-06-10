@@ -22,38 +22,20 @@ export default function App() {
   const [location, setLocation] = useState();
   const [tripPressed, setTripPressed] = useState(false);
   const [selectedTripId, setSelectedTripId] = useState(null);
+  const [trips, setTrips] = useState([]);
 
   // Store data in Async Storage
-  const storeData = async (key, value) => {
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-    } catch (e) {
-      console.error("Error storing data:", e);
-    }
-  };
-
-  // Retrieve data from Async Storage
-  const getData = async (key) => {
-    try {
-      const value = await AsyncStorage.getItem(key);
-      return value !== null ? JSON.parse(value) : null;
-    } catch (e) {
-      console.error("Error retrieving data:", e);
-    }
-  };
-
   const storeTrips = async (updatedTrips) => {
     try {
-      await AsyncStorage.setItem('trips', JSON.stringify(updatedTrips));
+      await AsyncStorage.setItem("trips", JSON.stringify(updatedTrips));
     } catch (e) {
-      console.error('Error storing trips:', e);
+      console.error("Error storing trips:", e);
     }
   };
 
   // Retrieve trips from Async Storage when the component mounts
   useEffect(() => {
     const getPermissions = async () => {
-      // ... (existing code)
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         console.log("Please grant location permissions");
@@ -69,37 +51,19 @@ export default function App() {
 
     const loadTrips = async () => {
       try {
-        const storedTrips = await AsyncStorage.getItem('trips');
+        const storedTrips = await AsyncStorage.getItem("trips");
         if (storedTrips !== null) {
           setTrips(JSON.parse(storedTrips));
-          console.log("STORED TRIPS",storedTrips);
-
+          console.log("STORED TRIPS", storedTrips);
         }
       } catch (e) {
-        console.error('Error loading trips:', e);
+        console.error("Error loading trips:", e);
       }
     };
 
     getPermissions();
     loadTrips();
   }, []);
-
-  // useEffect(() => {
-  //   const getPermissions = async () => {
-  //     let { status } = await Location.requestForegroundPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Please grant location permissions");
-  //       return;
-  //     }
-  //     setIsLoading(true);
-  //     let currentLocation = await Location.getCurrentPositionAsync({});
-  //     setLocation(currentLocation);
-  //     console.log("LOCATION");
-  //     console.log(currentLocation);
-  //     setIsLoading(false);
-  //   };
-  //   getPermissions();
-  // }, []);
 
   let currentAddressFormat = "";
 
@@ -112,7 +76,7 @@ export default function App() {
     if (reverseGeoCodedAddress.length > 0) {
       const currentAddress = {
         streetNumber: reverseGeoCodedAddress[0].streetNumber,
-        streetName: reverseGeoCodedAddress[0].street, // Access street from the first object
+        streetName: reverseGeoCodedAddress[0].street,
         city: reverseGeoCodedAddress[0].city,
         state: reverseGeoCodedAddress[0].region,
         zip: reverseGeoCodedAddress[0].postalCode,
@@ -129,8 +93,6 @@ export default function App() {
     }
   };
 
-  const [trips, setTrips] = useState([]);
-
   const startSubmitHandler = (text) => {
     if (text.length > 0) {
       const getAddress = async () => {
@@ -146,7 +108,7 @@ export default function App() {
         setTrips((prevTrips) => {
           const updatedTrips = [newTrip, ...prevTrips];
           console.log("New Trip:", newTrip);
-          storeTrips(updatedTrips); // Store updated trips
+          storeTrips(updatedTrips);
           return updatedTrips;
         });
       };
@@ -181,7 +143,7 @@ export default function App() {
         };
 
         setTrips((prevTrips) => {
-          const updatedTrips = prevTrips.map(trip =>
+          const updatedTrips = prevTrips.map((trip) =>
             trip.id === selectedTripId ? updatedTrip : trip
           );
           console.log("Updated array", updatedTrips);

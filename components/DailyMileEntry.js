@@ -28,12 +28,13 @@ const DailyMileEntry = ({startSubmitHandler}) => {
           onChangeText={changeHandler}
           />
         </View>
+        <View style={style.buttonContainer}>
         <TouchableOpacity
-        style={style.buttonContainer}
         onPress={() => startSubmitHandler(text)}>          
           <Text style={style.button}
           >Start Trip</Text>
         </TouchableOpacity>
+        </View>
       </View>
     </>
   );
@@ -58,12 +59,14 @@ const style = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     alignItems: "center",
+    backgroundColor: "red",
   },
   button: {
     fontSize: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: "aqua",
+    maxWidth: 'fit-content'
   },
 });
 

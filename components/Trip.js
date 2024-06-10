@@ -9,41 +9,41 @@ const Trip = ({ item, tripPressHandler }) => {
 
   const formatTime = (date) => {
     const d = new Date(date);
-    return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    return d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
   };
 
   const formattedStartDate = formatDate(item.startTime);
   const formattedStartTime = formatTime(item.startTime);
-  const formattedEndTime = item.endTime ? formatTime(item.endTime) : '';
+  const formattedEndTime = item.endTime ? formatTime(item.endTime) : "";
 
   return (
-    <TouchableOpacity onPress={() => tripPressHandler(item.id)}>
-      <View style={style.cardContainer}>
-        <View style={style.card}>
-          <Text style={[style.date, style.center]}>{formattedStartDate}</Text>
-          <View style={style.cardInfo}>
-            <View style={[style.cardLeftInfo, style.center]}>
-              <Text>Start:</Text>
-              <Text>{formattedStartTime}</Text>
-              <Text>{item.startLocation}</Text>
-              <Text>{item.startMiles}</Text>
-            </View>
+    <View style={style.cardContainer}>
+      <View style={style.card}>
+        <Text style={[style.date, style.center]}>{formattedStartDate}</Text>
+        <View style={style.cardInfo}>
+          <View style={[style.cardLeftInfo, style.center]}>
+            <Text style={style.center}>Start:</Text>
+            <Text>{formattedStartTime}</Text>
+            <Text>{item.startLocation}</Text>
+            <Text>{item.startMiles}</Text>
+          </View>
             <View style={[style.cardRightInfo]}>
+          <TouchableOpacity onPress={() => tripPressHandler(item.id)}>
               <Text>End:</Text>
               <Text>{formattedEndTime}</Text>
               <Text>{item.endLocation}</Text>
               <Text>{item.endMiles}</Text>
+          </TouchableOpacity>
             </View>
-          </View>
-          <View style={style.flex}>
-            <Text style={style.center}>Total Miles:</Text>
-            <Text style={style.center}>
-              {item.endMiles ? item.endMiles - item.startMiles : ''}
-            </Text>
-          </View>
+        </View>
+        <View style={style.flex}>
+          <Text style={style.center}>Total Miles:</Text>
+          <Text style={style.center}>
+            {item.endMiles ? item.endMiles - item.startMiles : ""}
+          </Text>
         </View>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 
