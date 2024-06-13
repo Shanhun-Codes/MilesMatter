@@ -143,6 +143,7 @@ export default function App() {
 
         if (updatedTrip.endMiles < tripToUpdate.startMiles) {
           Alert.alert("End miles must be greater than start miles", null, [{text: "Understood"}])
+          return;
         }
 
         setTrips((prevTrips) => {
