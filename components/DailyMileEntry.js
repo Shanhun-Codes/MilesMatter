@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -7,33 +7,31 @@ import {
   View,
 } from "react-native";
 
-const DailyMileEntry = ({startSubmitHandler}) => {
-  const [text, setText] = useState('')
-
-
+const DailyMileEntry = ({ startSubmitHandler }) => {
+  const [text, setText] = useState("");
+  const textInputRef = useRef(null)
 
   const changeHandler = (val) => {
-    setText(val)
+    setText(val);
     console.log(text);
-  }
-
+  };
 
   return (
     <>
       <View style={style.form}>
         <View style={style.inputContainer}>
-          <TextInput style={style.input} 
-          keyboardType="numeric"
-          placeholder="Enter Start Miles"
-          onChangeText={changeHandler}
+          <TextInput
+          ref={textInputRef}
+            style={style.input}
+            keyboardType="numeric"
+            placeholder="Enter Start Miles"
+            onChangeText={changeHandler}
           />
         </View>
         <View style={style.buttonContainer}>
-        <TouchableOpacity
-        onPress={() => startSubmitHandler(text)}>          
-          <Text style={style.button}
-          >Start Trip</Text>
-        </TouchableOpacity>
+          <TouchableOpacity onPress={() => startSubmitHandler(text, textInputRef)}> 
+            <Text style={style.button}>Start Trip</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </>
@@ -50,7 +48,7 @@ const style = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   input: {
-    textAlign: 'center',
+    textAlign: "center",
     fontSize: 20,
     width: "45%",
     fontSize: 25,
@@ -59,14 +57,12 @@ const style = StyleSheet.create({
   buttonContainer: {
     marginTop: 10,
     alignItems: "center",
-    backgroundColor: "red",
   },
   button: {
     fontSize: 20,
     paddingVertical: 10,
     paddingHorizontal: 20,
     backgroundColor: "aqua",
-    maxWidth: 'fit-content'
   },
 });
 

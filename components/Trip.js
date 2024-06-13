@@ -22,25 +22,27 @@ const Trip = ({ item, tripPressHandler }) => {
         <Text style={[style.date, style.center]}>{formattedStartDate}</Text>
         <View style={style.cardInfo}>
           <View style={[style.cardLeftInfo, style.center]}>
-            <Text style={style.center}>Start:</Text>
-            <Text>{formattedStartTime}</Text>
-            <Text>{item.startLocation}</Text>
-            <Text>{item.startMiles}</Text>
+            <TouchableOpacity>
+              <Text style={style.center}>Start:</Text>
+              <Text style={style.center}>{formattedStartTime}</Text>
+              <Text>{item.startLocation}</Text>
+              <Text>Miles: {item.startMiles}</Text>
+            </TouchableOpacity>
           </View>
-            <View style={[style.cardRightInfo]}>
-          <TouchableOpacity onPress={() => tripPressHandler(item.id)}>
-              <Text>End:</Text>
-              <Text>{formattedEndTime}</Text>
+          <View style={[style.cardRightInfo]}>
+            <TouchableOpacity onPress={() => tripPressHandler(item.id)}>
+              <Text style={style.center} t>
+                End:
+              </Text>
+              <Text style={style.center}>{formattedEndTime}</Text>
               <Text>{item.endLocation}</Text>
-              <Text>{item.endMiles}</Text>
-          </TouchableOpacity>
-            </View>
+              <Text>Miles: {item.endMiles} </Text>
+            </TouchableOpacity>
+          </View>
         </View>
         <View style={style.flex}>
-          <Text style={style.center}>Total Miles:</Text>
-          <Text style={style.center}>
-            {item.endMiles ? item.endMiles - item.startMiles : ""}
-          </Text>
+          <Text>Total Miles:</Text>
+          <Text>{item.endMiles ? item.endMiles - item.startMiles : ""}</Text>
         </View>
       </View>
     </View>

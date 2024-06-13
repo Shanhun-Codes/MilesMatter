@@ -6,7 +6,6 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
-  TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
 import Header from "./components/Header";
@@ -44,8 +43,6 @@ export default function App() {
       setIsLoading(true);
       let currentLocation = await Location.getCurrentPositionAsync({});
       setLocation(currentLocation);
-      console.log("LOCATION");
-      console.log(currentLocation);
       setIsLoading(false);
     };
 
@@ -54,7 +51,6 @@ export default function App() {
         const storedTrips = await AsyncStorage.getItem("trips");
         if (storedTrips !== null) {
           setTrips(JSON.parse(storedTrips));
-          console.log("STORED TRIPS", storedTrips);
         }
       } catch (e) {
         console.error("Error loading trips:", e);
@@ -93,7 +89,7 @@ export default function App() {
     }
   };
 
-  const startSubmitHandler = (text) => {
+  const startSubmitHandler = (text, textInputRef) => {
     if (text.length > 0) {
       const getAddress = async () => {
         const addressFormat = await reverseGeocode(location.coords);
@@ -113,6 +109,7 @@ export default function App() {
         });
       };
       getAddress();
+      textInputRef.current.clear();
     } else {
       Alert.alert("OOPS!", "Entry must be at least 1 character!", [
         { text: "Understood", onPress: () => console.log("Alert Closed") },
@@ -126,7 +123,7 @@ export default function App() {
     setSelectedTripId(tripId);
   };
 
-  const endSubmitHandler = (text) => {
+  const endSubmitHandler = (text, textInputRef) => {
     console.log(`the end milage is ${text}`);
     if (text.length > 0) {
       const getAddress = async () => {
@@ -147,11 +144,12 @@ export default function App() {
             trip.id === selectedTripId ? updatedTrip : trip
           );
           console.log("Updated array", updatedTrips);
-          storeTrips(updatedTrips); // Store updated trips
+          storeTrips(updatedTrips);
           return updatedTrips;
         });
       };
       getAddress();
+      textInputRef.current.clear()
     } else {
       Alert.alert("OOPS!", "Entry must be at least 1 character!", [
         { text: "Understood", onPress: () => console.log("Alert Closed") },
