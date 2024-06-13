@@ -20,6 +20,7 @@ const EndTripMilageEntry = ({ endSubmitHandler }) => {
       <View style={styles.form}>
         <View style={styles.inputContainer}>
           <TextInput
+          ref={textInputRef}
             style={styles.input}
             keyboardType="numeric"
             placeholder="Enter End Miles"

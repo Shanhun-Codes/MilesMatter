@@ -89,7 +89,7 @@ export default function App() {
     }
   };
 
-  const startSubmitHandler = (text, textInputRef) => {
+  const startSubmitHandler = (text, startTextInputRef) => {
     if (text.length > 0) {
       const getAddress = async () => {
         const addressFormat = await reverseGeocode(location.coords);
@@ -109,7 +109,8 @@ export default function App() {
         });
       };
       getAddress();
-      textInputRef.current.clear();
+      startTextInputRef.current.clear();
+      Keyboard.dismiss()
     } else {
       Alert.alert("OOPS!", "Entry must be at least 1 character!", [
         { text: "Understood", onPress: () => console.log("Alert Closed") },
@@ -125,6 +126,7 @@ export default function App() {
 
   const endSubmitHandler = (text, textInputRef) => {
     console.log(`the end milage is ${text}`);
+
     if (text.length > 0) {
       const getAddress = async () => {
         const addressFormat = await reverseGeocode(location.coords);
@@ -138,6 +140,10 @@ export default function App() {
           endTime: new Date().toISOString(),
           endLocation: addressFormat,
         };
+
+        if (updatedTrip.endMiles < tripToUpdate.startMiles) {
+          Alert.alert("End miles must be greater than start miles", null, [{text: "Understood"}])
+        }
 
         setTrips((prevTrips) => {
           const updatedTrips = prevTrips.map((trip) =>
