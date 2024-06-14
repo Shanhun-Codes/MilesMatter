@@ -91,9 +91,8 @@ export default function App() {
 
   const startSubmitHandler = (text, startTextInputRef) => {
     if (text.length > 0) {
-      const getAddress = async () => {
-        const addressFormat = await reverseGeocode(location.coords);
-        console.log(addressFormat);
+      const getNewTrip = async () => {
+        const addressFormat = await getAddress(location.coords);
         const newTrip = {
           id: trips.length + 1,
           startMiles: text.padStart(6, 0),
@@ -108,9 +107,9 @@ export default function App() {
           return updatedTrips;
         });
       };
-      getAddress();
+      getNewTrip();
       startTextInputRef.current.clear();
-      Keyboard.dismiss()
+      Keyboard.dismiss();
     } else {
       Alert.alert("OOPS!", "Entry must be at least 1 character!", [
         { text: "Understood", onPress: () => console.log("Alert Closed") },
@@ -118,19 +117,12 @@ export default function App() {
     }
   };
 
-  const tripPressHandler = (tripId) => {
-    setTripPressed(true);
-    console.log(`Item with id ${tripId} was pressed`);
-    setSelectedTripId(tripId);
-  };
-
   const endSubmitHandler = (text, textInputRef) => {
     console.log(`the end milage is ${text}`);
 
     if (text.length > 0) {
-      const getAddress = async () => {
-        const addressFormat = await reverseGeocode(location.coords);
-        console.log(addressFormat);
+      const updateTrip = async () => {
+        const addressFormat = await getAddress(location.coords);
         const tripToUpdate = trips.find((trip) => trip.id === selectedTripId);
         console.log(tripToUpdate);
 
@@ -142,7 +134,9 @@ export default function App() {
         };
 
         if (updatedTrip.endMiles < tripToUpdate.startMiles) {
-          Alert.alert("End miles must be greater than start miles", null, [{text: "Understood"}])
+          Alert.alert("End miles must be greater than start miles", null, [
+            { text: "Understood" },
+          ]);
           return;
         }
 
@@ -155,14 +149,26 @@ export default function App() {
           return updatedTrips;
         });
       };
-      getAddress();
-      textInputRef.current.clear()
+      updateTrip();
+      textInputRef.current.clear();
     } else {
       Alert.alert("OOPS!", "Entry must be at least 1 character!", [
         { text: "Understood", onPress: () => console.log("Alert Closed") },
       ]);
     }
     setTripPressed(false);
+  };
+  
+  const getAddress = async (coords) => {
+    const addressFormat = await reverseGeocode(coords);
+    console.log(addressFormat);
+    return addressFormat;
+  };
+
+  const tripPressHandler = (tripId) => {
+    setTripPressed(true);
+    console.log(`Item with id ${tripId} was pressed`);
+    setSelectedTripId(tripId);
   };
 
   return isLoading ? (
