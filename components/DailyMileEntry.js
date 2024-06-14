@@ -9,7 +9,7 @@ import {
 
 const DailyMileEntry = ({ startSubmitHandler }) => {
   const [text, setText] = useState("");
-  const startTextInputRef = useRef(null)
+  const startTextInputRef = useRef(null);
 
   const changeHandler = (val) => {
     setText(val);
@@ -21,7 +21,7 @@ const DailyMileEntry = ({ startSubmitHandler }) => {
       <View style={style.form}>
         <View style={style.inputContainer}>
           <TextInput
-          ref={startTextInputRef}
+            ref={startTextInputRef}
             style={style.input}
             keyboardType="numeric"
             placeholder="Enter Start Miles"
@@ -29,7 +29,9 @@ const DailyMileEntry = ({ startSubmitHandler }) => {
           />
         </View>
         <View style={style.buttonContainer}>
-          <TouchableOpacity onPress={() => startSubmitHandler(text, startTextInputRef)}> 
+          <TouchableOpacity
+            onPress={() => startSubmitHandler(text, startTextInputRef)}
+          >
             <Text style={style.button}>Start Trip</Text>
           </TouchableOpacity>
         </View>

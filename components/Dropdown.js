@@ -1,7 +1,7 @@
 import { Entypo } from "@expo/vector-icons";
 
 import { useState } from "react";
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 
 const HamburgerDropdown = () => {
   const pressHandler = () => {
@@ -9,15 +9,15 @@ const HamburgerDropdown = () => {
   };
 
   return (
-      <TouchableOpacity>
-        <Entypo
-          style={style.menuBtn}
-          onPress={pressHandler}
-          name="menu"
-          size={30}
-          color="white"
-        />
-      </TouchableOpacity>
+    <TouchableOpacity>
+      <Entypo
+        style={style.menuBtn}
+        onPress={pressHandler}
+        name="menu"
+        size={30}
+        color="white"
+      />
+    </TouchableOpacity>
   );
 };
 

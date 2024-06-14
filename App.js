@@ -37,7 +37,16 @@ export default function App() {
     const getPermissions = async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        console.log("Please grant location permissions");
+        Alert.alert(
+          "Please grant location permissions",
+          null,
+          [
+            {
+              text: "Understood",
+              onPress: () => console.log("Alert closed"),
+            },
+          ]
+        );
         return;
       }
       setIsLoading(true);
@@ -79,8 +88,8 @@ export default function App() {
       };
       currentAddressFormat = `${currentAddress.streetNumber} ${currentAddress.streetName},
       ${currentAddress.city}, ${currentAddress.state}`;
-      console.log("Address");
-      console.log(currentAddress);
+      // console.log("Address");
+      // console.log(currentAddress);
 
       return currentAddressFormat;
     } else {
@@ -102,7 +111,7 @@ export default function App() {
 
         setTrips((prevTrips) => {
           const updatedTrips = [newTrip, ...prevTrips];
-          console.log("New Trip:", newTrip);
+          // console.log("New Trip:", newTrip);
           storeTrips(updatedTrips);
           return updatedTrips;
         });
@@ -118,13 +127,13 @@ export default function App() {
   };
 
   const endSubmitHandler = (text, textInputRef) => {
-    console.log(`the end milage is ${text}`);
+    // console.log(`the end milage is ${text}`);
 
     if (text.length > 0) {
       const updateTrip = async () => {
         const addressFormat = await getAddress(location.coords);
         const tripToUpdate = trips.find((trip) => trip.id === selectedTripId);
-        console.log(tripToUpdate);
+        // console.log(tripToUpdate);
 
         const updatedTrip = {
           ...tripToUpdate,
@@ -144,7 +153,7 @@ export default function App() {
           const updatedTrips = prevTrips.map((trip) =>
             trip.id === selectedTripId ? updatedTrip : trip
           );
-          console.log("Updated array", updatedTrips);
+          // console.log("Updated array", updatedTrips);
           storeTrips(updatedTrips);
           return updatedTrips;
         });
@@ -158,18 +167,25 @@ export default function App() {
     }
     setTripPressed(false);
   };
-  
+
   const getAddress = async (coords) => {
     const addressFormat = await reverseGeocode(coords);
-    console.log(addressFormat);
+    // console.log(addressFormat);
     return addressFormat;
   };
 
   const tripPressHandler = (tripId) => {
     setTripPressed(true);
-    console.log(`Item with id ${tripId} was pressed`);
+    // console.log(`Item with id ${tripId} was pressed`);
     setSelectedTripId(tripId);
   };
+
+  const deleteTripHandler = (tripId) => {
+    const newArray = trips.filter((trip) =>  trip.id !== tripId)
+    // console.log(newArray)
+
+    setTrips(newArray)
+  }
 
   return isLoading ? (
     <View style={styles.loadingContainer}>
@@ -199,6 +215,7 @@ export default function App() {
               key={item.id}
               item={item}
               tripPressHandler={tripPressHandler}
+              deleteTripHandler={deleteTripHandler}
             />
           )}
         />

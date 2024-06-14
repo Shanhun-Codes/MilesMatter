@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Entypo } from "@expo/vector-icons";
 
-const Trip = ({ item, tripPressHandler }) => {
+
+const Trip = ({ item, tripPressHandler, deleteTripHandler }) => {
   const formatDate = (date) => {
     const d = new Date(date);
     return d.toLocaleDateString();
@@ -44,6 +46,12 @@ const Trip = ({ item, tripPressHandler }) => {
           <Text>Total Miles:</Text>
           <Text>{item.endMiles ? item.endMiles - item.startMiles : ""}</Text>
         </View>
+        <TouchableOpacity>
+          <Entypo
+          name="trash"
+          onPress={() => deleteTripHandler(item.id)}
+           />
+        </TouchableOpacity>
       </View>
     </View>
   );

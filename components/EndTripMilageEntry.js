@@ -9,7 +9,7 @@ import {
 
 const EndTripMilageEntry = ({ endSubmitHandler }) => {
   const [text, setText] = useState("");
-  const textInputRef = useRef(null)
+  const textInputRef = useRef(null);
 
   const changeHandler = (val) => {
     setText(val);
@@ -20,7 +20,7 @@ const EndTripMilageEntry = ({ endSubmitHandler }) => {
       <View style={styles.form}>
         <View style={styles.inputContainer}>
           <TextInput
-          ref={textInputRef}
+            ref={textInputRef}
             style={styles.input}
             keyboardType="numeric"
             placeholder="Enter End Miles"
@@ -28,7 +28,9 @@ const EndTripMilageEntry = ({ endSubmitHandler }) => {
           />
         </View>
         <View style={styles.buttonContainer}>
-          <TouchableOpacity onPress={() => endSubmitHandler(text, textInputRef)}>
+          <TouchableOpacity
+            onPress={() => endSubmitHandler(text, textInputRef)}
+          >
             <Text style={styles.button}>End Trip</Text>
           </TouchableOpacity>
         </View>
